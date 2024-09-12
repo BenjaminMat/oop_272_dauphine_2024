@@ -35,24 +35,36 @@ Run the unit tests below to check your implementation:
 
 class List:
     def __init__(self):
-        # TODO: Initialize the _elements dictionary and the _count counter
-        pass
+        self._elements = {}
+        self._count = 0
 
     def append(self, element):
-        # TODO: Implement the append method
-        pass
+        self._elements[self._count] = element
+        self._count = self._count + 1
 
     def remove(self, value):
-        # TODO: Implement the remove method
-        pass
+        for index, element in self._elements.items():
+            if element == value:
+                del self._elements[index]
+                self._count -= 1
+                for i in range(index, self._count):
+                    self._elements[i] = self._elements.pop(i + 1)
+                break
 
     def pop(self, index):
-        # TODO: Implement the pop method
-        pass
+        if index < 0 or index >= self._count:
+            raise IndexError("out of limit index")
+        element = self._elements.pop(index)
+        self._count -= 1
+        for i in range(index, self._count):
+            self._elements[i] = self._elements.pop(i + 1)
+        return element
 
     def get_index(self, value):
-        # TODO: Implement the get_index method
-        pass
+        for index, element in self._elements.items():
+            if element == value:
+                return index
+        return -1
 
 
 class Testlist(unittest.TestCase):
