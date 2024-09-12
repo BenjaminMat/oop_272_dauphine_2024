@@ -26,9 +26,13 @@ class FinancialAsset:
         self.price: float = price
         self.currency: str = currency
 
-    def get_description(self):
+    def __str__(self):
         return f'The ticker for this asset is {self.ticker} and its price is {self.price} {self.currency}'
 
+    def __eq__(self, other):
+        if not isinstance(other, FinancialAsset):
+            return False
+        return self.ticker == other.ticker and self.currency == other.currency
 
 
 """
@@ -54,11 +58,18 @@ class InstrumentList:
         self.instruments: [FinancialAsset] = list_of_instrument
 
     def __add__(self, other):
-        pass
+        if not isinstance(other, FinancialAsset):
+            raise TypeError("Can only add FinancialAsset objects")
+        return InstrumentList(self.instruments + [other])
 
     def __sub__(self, other):
-        pass
-
+        if not isinstance(other, FinancialAsset):
+            raise TypeError("Can only subtract FinancialAsset objects")
+        if other in self.instruments:
+            new_instruments = self.instruments.copy()
+            new_instruments.remove(other)
+            return InstrumentList(new_instruments)
+        return self  # Return the unchanged list if the asset is not found
 
 
 """
