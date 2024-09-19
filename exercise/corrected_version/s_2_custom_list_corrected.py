@@ -11,7 +11,7 @@ import unittest
     - `get_index(self, value)`: Returns the index of the first occurrence of the given value.
     - `remove(self, value)`: Removes the first occurrence of the given value.
     - `pop(self, index)`: Removes and returns the element at the specified index.
-
+    
     Your class should have the following attributes:
     - `_elements`: A dictionary containing the elements of the list.
     - `_count`: A counter to keep track of the number of elements.
@@ -33,27 +33,38 @@ Complete the `List` class below:
 Run the unit tests below to check your implementation:
 """
 
-
 class List:
     def __init__(self):
-        # TODO: Initialize the _elements dictionary and the _count counter
-        pass
+        self._elements = {}
+        self._count = 0
 
     def append(self, element):
-        # TODO: Implement the append method
-        pass
+        self._elements[self._count] = element
+        self._count += 1
 
     def remove(self, value):
-        # TODO: Implement the remove method
-        pass
+        for index, element in self._elements.items():
+            if element == value:
+                del self._elements[index]
+                self._count -= 1
+                for i in range(index, self._count):
+                    self._elements[i] = self._elements.pop(i + 1)
+                break
 
     def pop(self, index):
-        # TODO: Implement the pop method
-        pass
+        if index < 0 or index >= self._count:
+            raise IndexError("Out of bond Index")
+        element = self._elements.pop(index)
+        self._count -= 1
+        for i in range(index, self._count):
+            self._elements[i] = self._elements.pop(i + 1)
+        return element
 
-    def get_index(self, value):
-        # TODO: Implement the get_index method
-        pass
+    def get_index(self, valeur):
+        for index, element in self._elements.items():
+            if element == valeur:
+                return index
+        return -1
 
 
 class Testlist(unittest.TestCase):
@@ -98,7 +109,6 @@ class Testlist(unittest.TestCase):
         self.assertEqual(self.list.get_index(4), -1)
 
 def run_tests():
-    # Run all the tests with verbosity set to 2 for more detailed output
     unittest.main(argv=[''], verbosity=2, exit=False)
 
 if __name__ == '__main__':

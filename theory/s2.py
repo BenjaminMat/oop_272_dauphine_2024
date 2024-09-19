@@ -50,6 +50,9 @@ class BankAccount:
     def get_balance(self):
         return self._balance
 
+    def get_transaction_history(self):
+        return self.__transaction_history
+
     def __add_transaction(self, transaction):
         self.__transaction_history.append(transaction)
 
@@ -447,7 +450,7 @@ class BankAccount:
             self.balance = self.balance + other.balance
             return self.balance
 
-        if isinstance(other, FinancialInstrument) and other.currency == self.currency:
+        if isinstance(other, FinancialInstrument) and other.ticker == self.currency:
             self.balance = self.balance + other.price
             return self.balance
 
@@ -492,10 +495,7 @@ class FinancialAssetWithDunderEq:
 
     def __eq__(self, other):
         # First, ensure that the other object is an instance of the same class
-        if isinstance(other, FinancialAssetWithDunderEq):
-            return self.ticker == other.ticker
-        return False  # Return NotImplemented for types that are not of the same class
-
+        return isinstance(other, FinancialAssetWithDunderEq) and self.ticker == other.ticker
 
 asset_eq_dunder_example = FinancialAssetWithDunderEq('AAPL')
 asset_eq_dunder_example1 = FinancialAssetWithDunderEq('AAPL')
