@@ -1,0 +1,65 @@
+1. **BaseException**: Base class for all built-in exceptions. Not meant to be directly inherited by user-defined classes.
+2. **SystemExit**: Raised by the `sys.exit()` function.
+3. **KeyboardInterrupt**: Raised when the user hits the interrupt key (typically `Control-C` or `Delete`).
+4. **GeneratorExit**: Raise when a generator or coroutine is closed.
+5. **Exception**: Base class for all non-exit exceptions.
+6. **StopIteration**: Raised by built-in function `next()` and an iterator's `__next__()` method to signal that there are no further items.
+7. **StopAsyncIteration**: Must be raised by an `__anext__()` method to stop the iteration.
+8. **ArithmeticError**: Base class for arithmetic errors.
+    * **FloatingPointError**: Raised when a floating point operation fails.
+    * **OverflowError**: Raised when the result of an arithmetic operation is too large.
+    * **ZeroDivisionError**: Raised when dividing or modulo by zero.
+9. **AssertionError**: Raised when an `assert` statement fails.
+10. **AttributeError**: Raised when an attribute reference or assignment fails.
+11. **BufferError**: Raised when buffer related operations cannot be performed.
+12. **EOFError**: Raised when the `input()` function hits end-of-file condition.
+13. **ImportError**: Raised when the `import` statement has troubles trying to load a module.
+    * **ModuleNotFoundError**: A subclass of `ImportError` which is raised when a module could not be found.
+14. **LookupError**: Base class for lookup errors.
+    * **IndexError**: Raised when a sequence subscript is out of range.
+    * **KeyError**: Raised when a dictionary key or set element is not found.
+15. **MemoryError**: Raised when an operation runs out of memory.
+16. **NameError**: Raised when a local or global name is not found.
+    * **UnboundLocalError**: A subclass of `NameError`, raised when a local variable is referenced before it has been bound.
+17. **OSError**: Base class for OS exceptions.
+    * This can have several subclasses like `FileNotFoundError`, `PermissionError`, `TimeoutError`, etc. depending on the specific error reason.
+18. **ReferenceError**: Raised when a weak reference proxy is used to access an attribute of the referent after it has been garbage collected.
+19. **RuntimeError**: Raised when an error is detected that doesn’t fall in any of the other categories.
+    * **RecursionError**: Derived from `RuntimeError`, raised when the maximum recursion depth is exceeded.
+    * **NotImplementedError**: Derived from `RuntimeError`, raised when an abstract method requires an inherited subclass to override the method.
+20. **SyntaxError**: Raised when there's a syntax error in the program.
+21. **IndentationError**: Base class for syntax errors related to incorrect indentation.
+    * **TabError**: Raised when there's inconsistent use of tabs and spaces for indentation.
+22. **SystemError**: Raised when the interpreter detects internal error.
+23. **TypeError**: Raised when an operation or function is applied to an object of inappropriate type.
+24. **ValueError**: Raised when a built-in operation or function receives an argument that has the right type but inappropriate value.
+25. **Warning**: Base class for warning categories.
+    * There are several derived warning types like `UserWarning`, `DeprecationWarning`, `SyntaxWarning`, etc.
+Sure, continuing from where we left off
+26. **EnvironmentError**: Base class for exceptions that can occur outside the Python system: `IOError`, `OSError`. This class is now mostly obsolete and is left for backward compatibility.
+27. **IOError**: Raised when an I/O operation (like a print statement, the built-in open() function, or a method of a file object) fails for an I/O-related reason, e.g., “file not found” or “disk full”. This is now an alias of `OSError`.
+28. **WindowsError**: Raised on Windows-specific errors. It's a subclass of `OSError`.
+29. **BlockingIOError**: Raised when an operation would block on an object (e.g., socket) set for non-blocking operation. Subclass of `OSError`.
+30. **ChildProcessError**: Raised when an operation on a child process failed. Subclass of `OSError`.
+31. **FileExistsError**: Raised when trying to create a file or directory which already exists. Subclass of `OSError`.
+32. **FileNotFoundError**: Raised when a file or directory is requested but doesn’t exist. Subclass of `OSError`.
+33. **IsADirectoryError**: Raised when a file operation (such as os.remove()) is requested on a directory. Subclass of `OSError`.
+34. **NotADirectoryError**: Raised when a directory operation (such as os.listdir()) is requested on something which is not a directory. Subclass of `OSError`.
+35. **InterruptedError**: Raised when a system call is interrupted by an incoming signal. Subclass of `OSError`.
+36. **PermissionError**: Raised when trying to open a file in write mode where write access is not allowed. Subclass of `OSError`.
+37. **ProcessLookupError**: Raised when a given process doesn’t exist. Subclass of `OSError`.
+38. **TimeoutError**: Raised when a system function timed out at the system level. Subclass of `OSError`.
+39. **ConnectionError**: Base class for connection-related issues.
+    * **BrokenPipeError**: Raised when trying to write on a pipe while the other end has been closed, or when trying to write on a socket which has been shutdown for writing. Subclass of `ConnectionError`.
+    * **ConnectionAbortedError**: Raised when a connection attempt is aborted by the peer. Subclass of `ConnectionError`.
+    * **ConnectionRefusedError**: Raised when a connection attempt is refused by the peer. Subclass of `ConnectionError`.
+    * **ConnectionResetError**: Raised when a connection is reset by the peer. Subclass of `ConnectionError`.
+40. **UnicodeError**: Raised when a Unicode-related encoding or decoding error occurs. It has subclasses like `UnicodeEncodeError`, `UnicodeDecodeError`, and `UnicodeTranslateError`.
+41. **PendingDeprecationWarning**: Base class for warnings about features that will be deprecated in the future.
+42. **FutureWarning**: Base class for warnings about constructs that will change semantically in the future.
+43. **RuntimeWarning**: Base class for warnings about dubious runtime behavior.
+44. **SyntaxWarning**: Base class for warnings about dubious syntax.
+45. **UserWarning**: Base class for warnings generated by user code.
+46. **DeprecationWarning**: Base class for warnings about deprecated features (since Python 2.5).
+47. **BytesWarning**: Base class for warnings related to bytes and bytearray.
+48. **ResourceWarning**: Warning used to indicate mishandled resources, primarily those from the `gc.get_objects()` function.
