@@ -97,7 +97,26 @@ from datetime import datetime
 import math
 from abc import ABC, abstractmethod
 
-# TODO: Implement here the Part I
+class Strategy(ABC):
+    @abstractmethod
+    def generate_signals(self, data_for_signal_generation: dict):
+        """
+        Method aims to generate signals for backtesting strategy.
+
+        Parameters for the class : A dictionary with tickers as keys and positions as values. The dict should be named
+                                   data_for_signal_generation
+        Return: A dictionary with tickers as keys and signals as values.
+        """
+        pass
+
+class EqualWeightStrategy(Strategy):
+
+    def generate_signals(self, data_for_signal_generation: dict):
+        #{expression which generate a dict for item in iterable if condition} for creating a dict
+        tickers = data_for_signal_generation.keys()
+        equal_wgt = 1 / len(tickers)
+        return {ticker: equal_wgt for ticker in tickers}
+
 
 
 """
@@ -130,7 +149,51 @@ Portfolio Summary: Implement the portfolio_position_summary method. This method 
     and last close for the assets
 """
 
-# TODO: Implement here the Part II
+
+
+class Portfolio:
+    def __init__(self, name: str, currency: str, aum: float, nav: float, portfolio_strategy: Strategy):
+        self.name: str = name
+        self.currency: str = currency
+        self.aum: float = aum
+        self.nav: float = nav
+        self.historical_nav = []
+        self.positions: [Position] = []
+        self.strategy = portfolio_strategy
+
+    def _positions_to_dict(self) -> dict:
+        return {position.instrument.ticker: position for position in self.positions if position.weight is not None}
+
+    def initialize_position_from_instrument_list(self, instrument_list: list[Instrument]):
+        self.positions = [Position(instrument) for instrument in instrument_list]
+
+    def rebalance_portfolio(self, rebalancing_date: datetime = None):
+        if rebalancing_date is None:
+            rebalancing_date = datetime.now()
+
+        positions_dict = self._positions_to_dict()
+        signals = self.strategy.generate_signals(positions_dict)
+
+        for position in self.positions:
+            ticker = position.instrument.ticker
+            weight = signals.get(ticker, 0)
+            new_quantity = math.floor((self.aum * weight) / position.instrument.last_quote.price)
+            position.update(quantity=new_quantity, weight=weight, date=rebalancing_date)
+
+    def portfolio_position_summary(self) -> pd.DataFrame:
+        tickers = [position.instrument.ticker for position in self.positions]
+        weights = [position.weight for position in self.positions]
+        quantities = [position.quantity for position in self.positions]
+        last_prices = [position.instrument.last_quote.price for position in self.positions]
+
+        data = {
+            "Ticker": tickers,
+            "Weight": weights,
+            "Quantity": quantities,
+            "Last close": last_prices
+        }
+        return pd.DataFrame(data)
+
 
 
 
