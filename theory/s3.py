@@ -3,7 +3,6 @@ Table of contents :
         ## Polymorphism in OOP
         ## Abstract class
         ## Protocol class
-        ## Error handling
 """
 
 from datetime import datetime
@@ -251,7 +250,7 @@ x.mandatory_method()
 #z = AbstractClassExample() # TypeError: Can't instantiate abstract class
 
 
-#TODO: Modify the Asset class above to make it an abstract class (code line 39 to 97)
+#TODO: Modify the Asset class above to make it an abstract class (code line 24 to 84)
 
 
 """
@@ -421,96 +420,3 @@ for sublist in list_of_list:
 flat_list = [item for sublist in list_of_list for item in sublist]
 
 print('same output for flat_list: ' + str(flat_list == flat_list_with_for_loop))
-
-
-
-
-
-"""
- ## Error Handling
-
-**Python Exception Handling**
-Exception Handling in Python: try, except, finally
-
- ** In-Depth Definition/Concept**
-
- ** Why use it **
-
-** When to use it  **
-
-"""
-
-
-def divide(a, b):
-    try:
-        division = a / b
-    except ZeroDivisionError:
-        print("You tried to divide by zero.")
-        division = None
-    finally:
-        return division
-
-
-
-
-result = divide(10.5, 2.0)
-print(result)
-result1 = divide(10.5, 0.0)
-print(result1)
-
-"""
-## custom exception
-    ** Definition/Concept** 
-       
-    ** Why to use Custom Exceptions** 
-       
-    ** When to use Custom Exceptions  ** 
-    
-"""
-
-"""
-Example: Exception when particular behavior happened during execution, application to Updating quote for the
-FinancialAsset object
-"""
-
-
-class NegativePriceException(Exception):
-    """ Raised when the price of a financial asset is negative """
-    pass
-
-
-class QuoteCustomExceptionExample:
-    def __init__(self, date: datetime, price: float):
-        self.date = date
-        self.price = price
-
-    def __repr__(self):
-        return f"Quote(date={self.date!r}, price={self.price!r})"
-
-
-class FinancialAssetCustomExceptionExample:
-    def __init__(self, ticker, quote, currency):
-        self.ticker: str = ticker
-        self.last_quote: QuoteCustomExceptionExample = quote
-        self.currency: str = currency
-        self.history: [QuoteCustomExceptionExample] = []
-
-    def update_last_quote(self, new_quote: QuoteCustomExceptionExample):
-        try:
-            self.check_quote_for_asset(new_quote)
-            self.history.append(self.last_quote)
-            self.last_quote = new_quote
-        except NegativePriceException as price_exception:
-            print(str(price_exception))
-            print("Quote has not been updated")
-
-    def check_quote_for_asset(self, new_quote: QuoteCustomExceptionExample):
-        if new_quote.price < 0:
-            raise NegativePriceException(f"quote: {repr(new_quote)} for updating asset {self.ticker} is negative.")
-
-
-last_date, last_close = datetime.today(), -175.0
-equity_last_quote1 = QuoteCustomExceptionExample(last_date, last_close)
-equity = FinancialAssetCustomExceptionExample('AAPL', equity_last_quote1, 'USD')
-equity.update_last_quote(equity_last_quote1)
-
