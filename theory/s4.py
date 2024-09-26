@@ -14,6 +14,8 @@ Table of contents :
 """
 from datetime import datetime
 
+from theory.other.s3_extended import prices
+
 """
 ## Python Exception Handling
 
@@ -63,6 +65,13 @@ class NegativePriceException(Exception):
     """ Raised when the price of a financial asset is negative """
     pass
 
+class PriorDateForUpdatingQuoteException(Exception):
+    """ Raised when the date of the new quote is prior the date of the last quote attribute for the FinancialAsset object"""
+    pass
+
+#TODO: Create a custom exception after the PriorDateForUpdatingQuoteException that raised an error when the date
+# of a quote used to update last quote for asset is before the current stored quote. Then modify the update last quote
+# to store the quote in the quote history without updating the last quote attribute
 
 class Quote:
     def __init__(self, date: datetime, price: float):
@@ -88,13 +97,19 @@ class FinancialAsset:
         except NegativePriceException as price_exception:
             print(str(price_exception))
             print("Quote has not been updated")
-            #raise
+            # raise
+        except PriorDateForUpdatingQuoteException as date_exception:
+            print(str(date_exception))
+            self.history.append(new_quote)
+            print("Quote has been to the history")
         finally:
             pass
 
     def __check_quote_for_asset(self, new_quote: Quote):
         if new_quote.price < 0:
             raise NegativePriceException(f"quote: {repr(new_quote)} for updating asset {self.ticker} is negative.")
+        if new_quote.date < self.last_quote.date:
+            raise PriorDateForUpdatingQuoteException(f"quote: {repr(new_quote)} for updating asset {self.ticker} has a date that is before the date of the last quote attribute.")
 
 
 last_date, last_close = datetime.now(), 175.0
@@ -105,9 +120,6 @@ last_date2, last_close2 = datetime.now(), -200
 equity_last_quote2 = Quote(last_date2, last_close2)
 equity.update_last_quote(equity_last_quote2)
 
-#TODO: Create a custom exception after the PriorDateForUpdatingQuoteException that raised an error when the date
-# of a quote used to update last quote for asset is before the current stored quote. Then modify the update last quote
-# to store the quote in the quote history without updating the last quote attribute
 
 
 """
@@ -125,7 +137,8 @@ import statistics
 import numpy as np
 
 class FinancialAssetUtil:
-    def calculate_one_period_return(self, initial_value: float, final_value: float, method= "simple"):
+    @staticmethod
+    def calculate_one_period_return(initial_value: float, final_value: float, method= "simple"):
         """
         Calculates financial returns based on the one initial price and one final price.
         Parameters:
@@ -137,19 +150,22 @@ class FinancialAssetUtil:
         - One return, type float.
         """
         if method == 'simple':
-            return self.__calculate_simple_return(initial_value, final_value)
+            return FinancialAssetUtil.calculate_simple_return(initial_value, final_value)
         elif method == 'log':
-            return self.__calculate_log_return(initial_value, final_value)
+            return FinancialAssetUtil.calculate_log_return(initial_value, final_value)
         else:
             raise ValueError("Invalid method. Use 'simple' or 'log'.")
 
-    def __calculate_simple_return(self, initial_value, final_value):
+    @staticmethod
+    def calculate_simple_return(initial_value, final_value):
         return (final_value - initial_value) / initial_value
 
-    def __calculate_log_return(self, initial_value, final_value):
+    @staticmethod
+    def calculate_log_return(initial_value, final_value):
         return math.log(final_value / initial_value)
 
-    def calculate_volatility(self, returns):
+    @staticmethod
+    def calculate_volatility(returns):
         """
         Calculates the volatility (standard deviation) of a series of returns.
 
@@ -165,8 +181,8 @@ class FinancialAssetUtil:
             raise ValueError("Returns list must contain at least two returns.")
         return statistics.stdev(returns)
 
-
-    def calculate_drawdown(self, prices):
+    @staticmethod
+    def calculate_drawdown(prices):
         """
         Calculates the drawdowns for a series of prices.
 
@@ -187,7 +203,8 @@ class FinancialAssetUtil:
             drawdowns.append(drawdown)
         return drawdowns
 
-    def calculate_max_drawdown(self, prices):
+    @staticmethod
+    def calculate_max_drawdown( prices):
         """
         Calculates the max drawdowns for a series of prices.
 
@@ -197,10 +214,10 @@ class FinancialAssetUtil:
         Returns:
         - max drawdown value.
         """
-        return np.max(self.calculate_drawdown(prices))
+        return np.max(FinancialAssetUtil.calculate_drawdown(prices))
 
-
-    def calculate_cumulative_return(self, returns):
+    @staticmethod
+    def calculate_cumulative_return(returns):
         """
         Calculates the cumulative return from a series of returns.
 
@@ -227,9 +244,6 @@ class FinancialAssetUtil:
 """
 
 
-#TODO: modify the FinancialAssetUtil with static method
-
-
 """ 
 ## Data class
 
@@ -252,7 +266,7 @@ check if all the attribute are the same and not if the instance of the two objec
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass()
 class Quote:
     date: datetime
     price: float
