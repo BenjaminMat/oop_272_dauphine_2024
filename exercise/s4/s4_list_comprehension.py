@@ -3,6 +3,10 @@ Exercise 1: Market Capitalization Filter
 
 Given a dictionary of companies and their market capitalizations in billions, use a list comprehension to produce a list
 of companies with a market capitalization of more than $500 billion.
+
+Syntax:     [expression for item in iterable if condition] for creating a list
+            {expression which generate a dict for item in iterable if condition} for creating a dict
+
 """
 
 market_caps = {
@@ -14,6 +18,9 @@ market_caps = {
     'Zoom': 120
 }
 
+result_mkt_cap = [company for company,mkt_cap in market_caps.items() if mkt_cap> 500]
+print(result_mkt_cap)
+
 # Expected Output: ['Apple', 'Microsoft', 'Google', 'Amazon', 'Tesla']
 
 """
@@ -23,11 +30,14 @@ Given a list of numbers, normalize them so they range between 0 and 1.
 To normalize a value, you'd use the formula (value - min_value) / (max_value - min_value)
 
 """
-
+#[expression for item in iterable if condition] for creating a list
 data = [50, 100, 150, 200, 250]
 # Step 1: Find min and max values of the list
-
+min_value = min(data)
+max_value = max(data)
 # Step 2: Normalize the numbers
+result_norm = [(value - min(data)) / (max(data) - min(data)) for value in data]
+print(result_norm)
 
 # Expected Output: [0, 0.25, 0.5, 0.75, 1]
 
@@ -56,6 +66,8 @@ dividends = [0, 0.5, 0, 0, 1]
 
 # expected Output: [100, 100.5, 102, 103, 103]
 
+result_stock_price_adjustment = [price - div for price, div in zip(prices, dividends)]
+print(result_stock_price_adjustment)
 
 
 

@@ -23,3 +23,27 @@ class EqualWeightStrategy(Strategy):
         return {ticker: equal_wgt for ticker in tickers}
 
 
+class MomentumStrategy(Strategy):
+    def __init__(self, lookback_period: int):
+        self.lookback_period = lookback_period  # Number of periods to look back for momentum calculation
+
+    def generate_signals(self, data_for_signal_generation: dict):
+        signals = {}
+
+        for ticker, position in data_for_signal_generation.items():
+            instrument = position.instrument
+            df_prices = instrument.quotes_to_dataframe()
+
+            df_prices.sort_index(inplace=True)
+            df_prices['AvgPrice'] = df_prices['Price'].rolling(window=self.lookback_period).mean()
+            df_prices['Momentum'] = df_prices['Price'] - df_prices['AvgPrice']
+
+            df_prices['Signal'] = 0
+            df_prices.loc[df_prices['Momentum'] > 0, 'Signal'] = 1
+            df_prices.loc[df_prices['Momentum'] < 0, 'Signal'] = -1
+
+            latest_date = df_prices.index[-1]
+            latest_signal = df_prices.at[latest_date, 'Signal']
+            signals[ticker] = latest_signal
+
+        return signals
