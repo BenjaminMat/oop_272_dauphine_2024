@@ -18,9 +18,6 @@ market_caps = {
     'Zoom': 120
 }
 
-result_mkt_cap = [company for company,mkt_cap in market_caps.items() if mkt_cap> 500]
-print(result_mkt_cap)
-
 # Expected Output: ['Apple', 'Microsoft', 'Google', 'Amazon', 'Tesla']
 
 """
@@ -31,13 +28,8 @@ To normalize a value, you'd use the formula (value - min_value) / (max_value - m
 
 """
 #[expression for item in iterable if condition] for creating a list
-data = [50, 100, 150, 200, 250]
 # Step 1: Find min and max values of the list
-min_value = min(data)
-max_value = max(data)
 # Step 2: Normalize the numbers
-result_norm = [(value - min(data)) / (max(data) - min(data)) for value in data]
-print(result_norm)
 
 # Expected Output: [0, 0.25, 0.5, 0.75, 1]
 
@@ -60,14 +52,11 @@ In list comprehension the synthax to manipulate tuple is the following:
 
 example: [str(value1) + value2 for value1, value2 in zip(list1, list2)] ==> ['1a', '2b', '3c']
 """
-
+#[expression for item in iterable if condition] for creating a list
 prices = [100, 101, 102, 103, 104]
 dividends = [0, 0.5, 0, 0, 1]
 
 # expected Output: [100, 100.5, 102, 103, 103]
-
-result_stock_price_adjustment = [price - div for price, div in zip(prices, dividends)]
-print(result_stock_price_adjustment)
 
 
 

@@ -15,7 +15,8 @@ market_caps = {
 }
 
 # Expected Output: ['Apple', 'Microsoft', 'Google', 'Amazon', 'Tesla']
-
+filtered_companies = [company for company, cap in market_caps.items() if cap > 500]
+print(filtered_companies)
 
 """
 Exercise 2: Normalizing Data
@@ -27,8 +28,14 @@ To normalize a value, you'd use the formula (value - min_value) / (max_value - m
 
 data = [50, 100, 150, 200, 250]
 # Step 1: Find min and max values of the list
+min_value = min(data)
+max_value = max(data)
 
 # Step 2: Normalize the numbers
+normalized_numbers = [(value - min_value) / (max_value - min_value) for value in data]
+print(normalized_numbers)
+
+# normalized_numbers = [(value - min(numbers)) / (max(numbers) - min(numbers)) for value in numbers]
 
 # Expected Output: [0, 0.25, 0.5, 0.75, 1]
 
@@ -56,6 +63,8 @@ prices = [100, 101, 102, 103, 104]
 dividends = [0, 0.5, 0, 0, 1]
 
 # expected Output: [100, 100.5, 102, 103, 103]
+adjusted_prices = [price - dividend for price, dividend in zip(prices, dividends)]
+print(adjusted_prices)
 
 
 
