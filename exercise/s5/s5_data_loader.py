@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from datetime import datetime
 import pandas as pd
 import yfinance as yf
@@ -20,9 +22,9 @@ YahooFinanceDataLoader to fetch and populate this data.
    - dividend_yield: Indicates the dividend yield of the stock.
    - short_ratio: Denotes the short ratio.
    - price_history: Contains the historical price data of the stock.
-   Create a classmethod method which takes the following argument and build the object data: dict, ticker: str, 
-   history: pd.DataFrame
-
+   
+   After creating the dataclass, create a classmethod method which takes the following argument and build the object 
+   data: dict, ticker: str, history: pd.DataFrame. data will contain short_name, sector, ...
 
 2. **Enhance the YahooFinanceDataLoader**:
    Extend the YahooFinanceDataLoader class to integrate a new method named populate_dataclass. This method should:
@@ -30,10 +32,16 @@ YahooFinanceDataLoader to fetch and populate this data.
    - Use the yFinance.info object to retrieve all the information. Except for the price_history, all the information 
    could be retrieve from the yFinance.info object (example : for short_name it will be ticker.info.shortName. transform
    the snake_case notation to a camelCase notation)
+   - For the price history, you can use the method already defined in the data loader
 
 3. **Instance Creation and Population**:
-   - Instantiate an object (e.g., stock_data) of the YahooFinanceData dataclass.
-   - Use the populate_dataclass method of the YahooFinanceDataLoader to fill in the data for stock_data.
+   - Instantiate an object YahooFinanceDataLoader.
+   - Use the populate_dataclass method of the YahooFinanceDataLoader to create a YahooFinanceData object.
+   
+Hint: 
+    Start by trying all the method of the data loader. You could also use it on debug to see the attribute of the
+    object you retrieve from yahoo finance.
+    If you have difficulties when you try to import yfinance package, go to the other/yfinance_installation.txt file.
 """
 
 
@@ -80,9 +88,9 @@ class YahooFinanceDataLoader:
             ticker = YahooFinanceDataLoader.get_information_for_ticker(ticker_symbol)
             return ticker.history(period="1d", start=start_date, end=end_date)
         except Exception:  # This is a general catch-all for exceptions not specified above
-            raise MarketDataDownloadError(YahooFinanceDataLoader, 'get_last_close_and_date', ticker_symbol)
+            raise MarketDataDownloadError(YahooFinanceDataLoader, 'historical_price', ticker_symbol)
 
 
 if __name__ == '__main__':
     loader = YahooFinanceDataLoader()
-    data = loader.get_extended_data('MMM')
+    data = loader.populate_dataclass('MMM')
