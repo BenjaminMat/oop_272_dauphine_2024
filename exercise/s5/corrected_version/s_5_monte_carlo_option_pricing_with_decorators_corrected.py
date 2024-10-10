@@ -51,6 +51,16 @@ Now, implement a decorator called option_pricer. This decorator should:
     Return the new class
 """
 
+def option_pricer(payoff_func):
+    def wrapper(**payoff_params):
+        class OptionPricer(MonteCarloSimulator):
+            def payoff(self, random_price_generated):
+                return payoff_func(random_price_generated, **payoff_params)
+        OptionPricer.__name__ = payoff_func.__name__ + "Pricer"
+        return OptionPricer
+    return wrapper
+
+
 """
 Once you’ve implemented the decorator, you should be able to use it like this:
 """

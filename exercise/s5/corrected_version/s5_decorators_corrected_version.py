@@ -23,7 +23,16 @@ import time
 
 from scipy.stats import norm
 
-#TODO: implement the decorator here:
+
+def timing_decorator(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f"execution time for {func.__name__} is {round(execution_time, 6)} seconds")
+        return result
+    return wrapper
 
 
 """
@@ -39,8 +48,24 @@ Define a decorator validate_inputs that:
         Apply this decorator to relevant method to ensure inputs are valid before the calculation proceeds.
 """
 
-#TODO: implement the decorator here:
+def validate_inputs(func):
+    def wrapper(*args, **kwargs):
+        if args:
+            obj_instance = args[0] # get the self in the func, i.e the instance of the object
+            fields = {
+                "spot": obj_instance.spot,
+                "strike": obj_instance.strike,
+                "ttm": obj_instance.ttm,
+                "vol": obj_instance.vol
+            }
 
+            for field, value in fields.items():
+                if value is not None and value < 0:
+                    raise ValueError(f"{field} price for {obj_instance} should be positive")
+
+        return func(*args, **kwargs)
+
+    return wrapper
 
 """
 Create a decorator named @MemoizationDecorator to cache the results of functions for given inputs to avoid redundant 
@@ -57,7 +82,22 @@ Create test cases where the function is called multiple times with the same and 
 Observe the time taken with and without memoization using your timing_decorator from Part 1.
 """
 
-#TODO: implement the decorator here:
+class MemoizationDecorator:
+    def __init__(self):
+        self.stored_result = {}
+
+    def __call__(self, func):
+        def wrapper(*args, **kwargs):
+            key = func.__name__ + "__" + str(args) + "__" + str(kwargs)
+            if self.stored_result.get(key) is not None:
+                print(f"getting result stored in cache for key: {key}")
+                return self.stored_result[key]
+            result = func(*args, **kwargs)
+            self.stored_result[key] = result
+            print(f"result stored for key: {key}")
+            return result
+        return wrapper
+
 
 class Option:
     def __init__(self, spot, strike, risk_free, time_to_maturity, volatility):
@@ -83,6 +123,10 @@ class Option:
 
 
 class Call(Option):
+
+    def __repr__(self):
+        return f"Call(spot={str(self.spot)}, strike={str(self.strike)}, risk_free={str(self.ttm)}, ttm={str(self.vol)})"
+
     @timing_decorator
     def compute_price(self):
         n_d1 = norm.cdf(self.compute_d1())
@@ -101,6 +145,10 @@ class Call(Option):
 
 
 class Put(Option):
+
+    def __repr__(self):
+        return f"Put(spot={str(self.spot)}, strike={str(self.strike)}, risk_free={str(self.ttm)}, ttm={str(self.vol)})"
+
     @timing_decorator
     def compute_price(self):
         n_minus_d1 = norm.cdf(-self.compute_d1())
@@ -116,7 +164,6 @@ class Put(Option):
     def compute_theta(self):
         return (-self.spot * self.vol * norm.pdf(self.compute_d1()) / (2 * math.sqrt(self.ttm))) \
                + self.risk_free * self.strike * math.exp(-self.risk_free * self.ttm) * norm.cdf(-self.compute_d2())
-
 
 
 if __name__ == '__main__':

@@ -27,10 +27,10 @@ class MomentumStrategy(Strategy):
     def __init__(self, lookback_period: int):
         self.lookback_period = lookback_period  # Number of periods to look back for momentum calculation
 
-    def generate_signals(self, data_for_signal_generation: dict):
+    def generate_signals(self, position_for_signal_generation: dict):
         signals = {}
 
-        for ticker, position in data_for_signal_generation.items():
+        for ticker, position in position_for_signal_generation.items():
             instrument = position.instrument
             df_prices = instrument.quotes_to_dataframe()
 
